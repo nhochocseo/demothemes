@@ -1,0 +1,145 @@
+.clear {
+  clear:both;
+}
+.right {
+  text-align: right;
+}
+ul,li {
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+.search {
+  float:left;
+  background:#fff;
+  border-radius:3px;
+  box-shadow:#A1A1A1 0 0 3px;
+  overflow:hidden;
+  margin:0;
+  padding:3px 0;
+  height:30px;
+}
+.sidebar {
+  display: none;
+  background:#f5f5f5;
+  position:fixed;
+  border:1px solid #d3d3d3;
+  bottom:0;
+  right:0;
+  width:220px;
+  top:105px;
+}
+
+.ranpost {
+  padding:5px;
+  height:198px;
+  overflow:hidden;
+  padding-right:0;
+  border-bottom:1px solid #d3d3d3;
+}
+
+.ranpost div#mCSB_2_scrollbar_vertical,
+.block-cat div#mCSB_3_scrollbar_vertical {
+  opacity:0;
+}
+
+.ranpost:hover div#mCSB_2_scrollbar_vertical,
+.block-cat:hover div#mCSB_3_scrollbar_vertical {
+  opacity:1;
+}
+
+.ranpost ul li a img {
+  height:40px;
+  width:50px;
+  float:left;
+  margin-right:5px;
+  border:1px solid #D3D3D3;
+}
+.breadcrumb a {
+  color: #f2f2f2;
+}
+.ranpost ul li a {
+  font-size:12px;
+  text-decoration:none;
+  color:#505050;
+}
+
+.ranpost ul li {
+  padding-bottom:5px;
+  margin-bottom:5px;
+  border-bottom:1px solid #d3d3d3;
+}
+
+.sidebar h5 {
+    text-transform: uppercase;
+    background: #0E4E79;
+    font-family: Honghahep;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px;
+    margin: 0;
+}
+
+.block-cat {
+  height:auto;
+  position:fixed;
+  bottom:0;
+  top:365px;
+  width:220px;
+  background:#f5f5f5;
+}
+
+.block-cat ul li {
+    padding-left:5px;
+  padding-bottom:5px;
+  margin-bottom:5px;
+  border-bottom:1px solid #d3d3d3;
+  font-size:13px;
+}
+
+h5.soll, h5.hidele {
+  background: #0E4E79;
+  border-top: 1px solid #D3D3D3;
+  margin: 0px;
+  margin-top: 1px;
+  padding: 5px;
+}
+.icondonwn{
+  float:right;
+  font-size:20px;
+  margin-top:-5px;
+  color:#fff;
+  cursor:pointer;
+  margin-right:15px
+}
+.iconup {
+  float:right;
+  margin-right:15px;
+  font-size:20px;
+  margin-top:-5px;
+  color:#fff;
+  cursor:pointer;
+  position:relative;
+}
+.search-box {
+  position:fixed;
+  bottom:0;
+  width:220px;
+  background:#fff;
+  right:0;
+}
+
+input.s-box {
+    width: 100%;
+    border: 1px solid #d3d3d3;
+    background: url(./images/search.png) no-repeat 6px 3px;
+    height: 34px;
+    padding-left: 37px;
+}
+input.s-box:focus {
+  border: 0.5px solid rgba(0, 188, 212, 0.85);
+}
+input.display {
+  display:none;
+}

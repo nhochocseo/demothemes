@@ -5,10 +5,61 @@
 	*/
 define('THEME_URL', get_stylesheet_directory());
 define('CORE' , THEME_URL . "/core");
-	/*
-		@Nhúng file init trong thư mục core
-	*/
 require_once(CORE . "/init.php");
+require_once(CORE .'/plugin/widget-post.php');
+require_once dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
+add_action( 'tgmpa_register', 'caodung_plugin_activation' );
+function caodung_plugin_activation() {
+    $plugins = array(
+            // Gọi một plugin nào đó ở bên ngoài
+            array(
+                'name'               => 'Crayon Syntax Highlighter', // Tên của plugin
+                'slug'               => 'dungcv-crayon-syntax-highlighter', // Tên thư mục plugin
+                'source'             => CORE . '/plugin/crayon-syntax-highlighter.zip', // Link tải plugin - direct link
+                'required'           => true, // Nếu đặt là true thì plugin này sẽ không bắt buộc phải cài mà chỉ ở dạng Recommend.
+                'external_url'       => 'https://github.com/thomasgriffin/New-Media-Image-Uploader', // Nếu bạn cài plugin ở bên ngoài, không phải từ WordPress.Org thì thêm URL của trang plugin vào.
+            ),
+            // Gọi một plugin trong thư viện WordPress.org/plugins
+            array(
+                'name'      => 'BuddyPress',
+                'slug'      => 'buddypress', //Tên slug của plugin trên URL
+                'required'  => false,
+            ),
+ 
+        ); // end $plugins
+ 
+    $config = array(
+        'default_path' => '',
+        'menu'         => 'tgmpa-install-plugins', // Menu slug.
+        'has_notices'  => true,                    // Có hiển thị thông báo hay không
+        'dismissable'  => true,                    // Nếu đặt false thì người dùng không thể hủy thông báo cho đến khi cài hết plugin.
+        'dismiss_msg'  => '',                      // Nếu 'dismissable' là false, thì tin nhắn ở đây sẽ hiển thị trên cùng trang Admin.
+        'is_automatic' => false,                   // Nếu là false thì plugin sẽ không tự động kích hoạt khi cài xong.
+        'message'      => '',
+        'strings'      => array(
+            'page_title'                      => __( 'Install Required Plugins', 'tgmpa' ),
+            'menu_title'                      => __( 'Install Plugins', 'tgmpa' ),
+            'installing'                      => __( 'Installing Plugin: %s', 'tgmpa' ), // %s = plugin name.
+            'oops'                            => __( 'Something went wrong with the plugin API.', 'tgmpa' ),
+            'notice_can_install_required'     => _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.' ), // %1$s = plugin name(s).
+            'notice_can_install_recommended'  => _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.' ), // %1$s = plugin name(s).
+            'notice_cannot_install'           => _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.' ), // %1$s = plugin name(s).
+            'notice_can_activate_required'    => _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s).
+            'notice_can_activate_recommended' => _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s).
+            'notice_cannot_activate'          => _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.' ), // %1$s = plugin name(s).
+            'notice_ask_to_update'            => _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.' ), // %1$s = plugin name(s).
+            'notice_cannot_update'            => _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.' ), // %1$s = plugin name(s).
+            'install_link'                    => _n_noop( 'Begin installing plugin', 'Begin installing plugins' ),
+            'activate_link'                   => _n_noop( 'Begin activating plugin', 'Begin activating plugins' ),
+            'return'                          => __( 'Return to Required Plugins Installer', 'tgmpa' ),
+            'plugin_activated'                => __( 'Plugin activated successfully.', 'tgmpa' ),
+            'complete'                        => __( 'All plugins installed and activated successfully. %s', 'tgmpa' ), // %s = dashboard link.
+            'nag_type'                        => 'updated' // Determines admin notice type - can only be 'updated', 'update-nag' or 'error'.
+        )
+    ); // end $config
+    tgmpa( $plugins, $config );
+ 
+}
 	/*
 		@Thiết lập chiều rộng nội dung
 	*/
@@ -118,6 +169,7 @@ if (!function_exists('caodung_navitation')) {
 		wp_nav_menu($menu);
 	}
 }
+
  /**
  * class bootstrap_menu()
  *
@@ -141,7 +193,6 @@ if (!function_exists('caodung_navitation')) {
     $args = (object) $args;
     $item_html = '';
     parent::start_el($item_html, $item, $depth, $args);
- 
     if (($item->hasChildren) && ($depth === 0)) {
         $item_html = str_replace('<a', '<a class="dropdown-toggle" data-toggle="dropdown" data-target="#"', $item_html);
         $item_html = str_replace('</a>', ' <b class="caret"></b></a>', $item_html);
@@ -212,14 +263,14 @@ if ( ! function_exists( 'get_first_image' ) ) {
 		@ Còn ở trang chủ và trang lưu trữ, nó sẽ là thẻ <h2>
 		@ caodung_entry_header()
 		**/
-if ( ! function_exists( 'caodung_entry_header' ) ) {
-  function caodung_entry_header() {
+if ( ! function_exists( 'caodung_entry_title' ) ) {
+  function caodung_entry_title() {
     if ( is_single() ) : ?>
-    <a class="h2_caodung_box-name" href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>">
+    <a class="h2_caodung_box-name" href="<?php the_permalink(); ?>" data-toggle="tooltip" data-placement="bottom" rel="bookmark" title="<?php the_title_attribute(); ?>">
           <h2 class="caodung_box_title"><span> <?php the_title(); ?></span></h2>
         </a>
     <?php else : ?>
-        <a class="h2_caodung_box-name" href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>">
+        <a class="h2_caodung_box-name" href="<?php the_permalink(); ?>"data-toggle="tooltip" data-placement="bottom"  rel="bookmark" title="<?php the_title_attribute(); ?>">
           <h1 class="caodung_box_title"><span> <?php the_title(); ?></span></h1>
         </a>
      <?php
@@ -259,7 +310,6 @@ if( ! function_exists( 'caodung_entry_meta' ) ) {
     endif;
   }
 }
- 
 		/*
 		 * Thêm chữ Read More vào excerpt
 		 */
@@ -296,7 +346,6 @@ add_filter( 'excerpt_more', 'caodung_readmore' );
  
     }
   }
- 
   /**
 		@ Hàm hiển thị tag của post
 		@ caodung_entry_tag()
@@ -310,20 +359,140 @@ if ( ! function_exists( 'caodung_entry_tag' ) ) {
     endif;
   }
 }
+function get_linkthumuc( $id, $link = false, $separator = '/', $nicename = false, $visited = array() ) {
+	$chain = '';
+	$parent = get_term( $id, 'category' );
+	if ( is_wp_error( $parent ) )
+		return $parent;
+	if ( $nicename )
+		$name = $parent->slug;
+	else
+		$name = $parent->name;
+	if ( $parent->parent && ( $parent->parent != $parent->term_id ) && !in_array( $parent->parent, $visited ) ) {
+		$visited[] = $parent->parent;
+		$chain .= get_category_parents( $parent->parent, $link, $separator, $nicename, $visited );
+	}
+	if ( $link )
+		$chain .= '<a class="internal-link" href="' . esc_url( get_category_link( $parent->term_id ) ) . '">'.$name.'</a>' . $separator;
+	else
+		$chain .= $name.$separator;
+	return $chain;
+}
+function dimox_breadcrumbs() {
+	$delimiter = '</span><span typeof="v:Breadcrumb"> » ';
+	$home = 'Trang chủ'; // chữ thay thế cho phần 'Home' link
+	$before = '<span class="breadcrumb_last" property="v:title">'; // thẻ html đằng trước mỗi link
+	$after = '</li></li>'; // thẻ đằng sau mỗi link
+	if ( !is_home() && !is_front_page() || is_paged() ) {
+
+	echo '<ol class="breadcrumb" xmlns:v="http://rdf.data-vocabulary.org/#">';
+
+	global $post;
+	$homeLink = get_bloginfo('url');
+	echo '<span typeof="v:Breadcrumb"><a class="internal-link" href="' . $homeLink . '" rel="v:url" property="v:title">' . $home . '</a> ' . $delimiter . ' ';
+
+	if ( is_category() ) {
+	global $wp_query;
+	$cat_obj = $wp_query->get_queried_object();
+	$thisCat = $cat_obj->term_id;
+	$thisCat = get_category($thisCat);
+	$parentCat = get_category($thisCat->parent);
+	if ($thisCat->parent != 0) echo(get_linkthumuc($parentCat, TRUE, ' ' . $delimiter . ' '));
+	echo $before . ' <b><a class="internal-link" href="#" rel="v:url" property="v:title">' . single_cat_title('', false) . '</a></b></span></ol>' . $after;
+
+	} elseif ( is_day() ) {
+	echo '<a class="internal-link" href="' . get_year_link(get_the_time('Y')) . '" rel="v:url" property="v:title">' . get_the_time('Y') . '</a> ' . $delimiter . ' ';
+	echo '<a class="internal-link" href="' . get_month_link(get_the_time('Y'),get_the_time('m')) . '" rel="v:url" property="v:title">' . get_the_time('F') . '</a> ' . $delimiter . ' ';
+	echo $before . get_the_time('d') . $after;
+
+	} elseif ( is_month() ) {
+	echo '<a class="internal-link" href="' . get_year_link(get_the_time('Y')) . '" rel="v:url" property="v:title">' . get_the_time('Y') . '</a> ' . $delimiter . ' ';
+	echo $before . get_the_time('F') . $after;
+
+	} elseif ( is_year() ) {
+	echo $before . get_the_time('Y') . $after;
+
+	} elseif ( is_single() && !is_attachment() ) {
+	if ( get_post_type() != 'post' ) {
+	$post_type = get_post_type_object(get_post_type());
+	$slug = $post_type->rewrite;
+	echo '<a class="internal-link" href="' . $homeLink . '/' . $slug['slug'] . '/" rel="v:url" property="v:title">' . $post_type->labels->singular_name . '</a> ' . $delimiter . '';
+	echo $before . ''. get_the_title() . ' '. $after;
+	} else {
+	$cat = get_the_category(); $cat = $cat[0];
+	echo get_linkthumuc($cat, TRUE, ' ' . $delimiter . ' ');
+	echo $before . get_the_title() . $after. '</ol>';
+	}
+
+	} elseif ( !is_single() && !is_page() && get_post_type() != 'post' && !is_404() ) {
+	$post_type = get_post_type_object(get_post_type());
+	echo $before . $post_type->labels->singular_name . $after;
+
+	} elseif ( is_attachment() ) {
+	$parent = get_post($post->post_parent);
+	$cat = get_the_category($parent->ID); $cat = $cat[0];
+	echo get_linkthumuc($cat, TRUE, ' ' . $delimiter . ' ');
+	echo '<a class="internal-link"  href="' . get_permalink($parent) . '" rel="v:url" property="v:title">' . $parent->post_title . '</a> ' . $delimiter . ' ';
+	echo $before . get_the_title() . $after;
+
+	} elseif ( is_page() && !$post->post_parent ) {
+	echo $before . get_the_title() . $after;
+
+	} elseif ( is_page() && $post->post_parent ) {
+	$parent_id = $post->post_parent;
+	$breadcrumbs = array();
+	while ($parent_id) {
+	$page = get_page($parent_id);
+	$breadcrumbs[] = '<a class="internal-link"  href="' . get_permalink($page->ID) . '" rel="v:url" property="v:title">' . get_the_title($page->ID) . '</a>';
+	$parent_id = $page->post_parent;
+	}
+	$breadcrumbs = array_reverse($breadcrumbs);
+	foreach ($breadcrumbs as $crumb) echo $crumb . ' ' . $delimiter . ' ';
+	echo $before . get_the_title() . $after;
+
+	} elseif ( is_search() ) {
+	echo $before . '<a class="internal-link" href="#" rel="v:url" property="v:title">' . get_search_query() . '</a>' . $after;
+	echo '</div>';
+	} elseif ( is_tag() ) {
+	echo $before . '<a class="internal-link" href="http://gioitreit.com/xem-nhieu" rel="v:url" property="v:title">Tag</a> » <a href="#" rel="v:url" property="v:title">' . single_tag_title('', false) . '</a>' . $after;
+	echo '</div>';
+	} elseif ( is_author() ) {
+	global $author;
+	$userdata = get_userdata($author);
+	echo $before . 'Bài Viết Của : <b><a class="internal-link" href="#" rel="v:url" property="v:title">' . $userdata->display_name . '</a></b>' . $after;
+	echo '</div>';
+	} elseif ( is_404() ) {
+	echo $before . 'Error 404' . $after;
+	}
+
+	if ( get_query_var('paged') ) {
+	if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo ' ';
+	echo __('');
+	if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() ) echo '';
+	}
+
+	echo '';
+
+	}
+} // end mod_breadcrumbs()
 	/*
 		@Nhúng tệp tin style.css vào theme
 	*/
 function caodung_style() {
 	// Load css bootstrap desgin
-	wp_register_style( 'style-css', get_template_directory_uri() . "/style.css",'all' );
-	wp_enqueue_style( 'style-css' );
+	wp_register_style( 'style', get_template_directory_uri() . "/style.css",'all' );
+	wp_enqueue_style( 'style' );
+	wp_enqueue_style( 'core', get_template_directory_uri() . "/core.css",'core-css'  );
+	wp_enqueue_style( 'jQuery-CustomScrollbar', get_template_directory_uri() . "/core/css/jquery.mCustomScrollbar.min.css" );
 	// Load file thư viện (libraly bootstrap) css bootstrap
-	wp_register_style( 'wpbootstrap-min',get_template_directory_uri() . "/bootstrap/css/bootstrap.min.css" );
-	wp_enqueue_style( 'wpbootstrap-min' );
-	wp_register_style( 'wpbootstrap-theme',get_template_directory_uri() . "/bootstrap/css/bootstrap-theme.min.css" );
-	wp_enqueue_style( 'wpbootstrap-theme' );
-	wp_register_style( 'wpfont-awesome',get_template_directory_uri() . "/bootstrap/font-awesome-4.5.0/css/font-awesome.min.css" );
-	wp_enqueue_style( 'wpfont-awesome' );
+	wp_enqueue_style( 'wpbootstrap-min' ,get_template_directory_uri() . "/bootstrap/css/bootstrap.min.css" );
+	wp_enqueue_style( 'wpbootstrap-theme',get_template_directory_uri() . "/bootstrap/css/bootstrap-theme.min.css"  );
+	wp_enqueue_style( 'wpfont-awesome',get_template_directory_uri() . "/bootstrap/font-awesome-4.5.0/css/font-awesome.min.css" );
+	/*Nhúng thư viện script*/
+	/*<!--[if lt IE 9]-->*/
+	wp_enqueue_script( 'html5shiv', get_template_directory_uri() ."/core/js/html5shiv.min.js" );
+	wp_enqueue_script( 'respond', get_template_directory_uri() ."/core/js/respond.min.js" );
+	wp_enqueue_script( 'jqueryapis',"https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" );
 }
 add_action( 'wp_enqueue_scripts', 'caodung_style' );
 

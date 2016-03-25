@@ -1,8 +1,10 @@
 /*
-* Theme Name: Theme Demo 2016
-* Auther : Cao Dũng
-* Description: Demo theme bolog dơn giản
-* Theme URL: http://caodung.vn
+* Theme Name: DemoThemes
+* Author: CaoDungBlog
+* License: WordPress Desgin
+* License URI: http://facebook.com/caodungplus
+* Description: Demo theme blog
+* Theme URL: http://fb.com/caodungplus
 * Version: 1.0
 */
 @charset "UTF-8";
@@ -12,7 +14,7 @@ body {
  margin:0 auto;
  padding:0;
  font-family: arial!important;
- background: #EAEAEA /*url(images/background.png) fixed center */!important;
+ background: fixed center */!important;
  color:#595959!important;
  line-height: 16px;
  overflow-x: hidden;
@@ -33,7 +35,11 @@ a:hover {
   /* background: #f2f2f2; */
 }
 #content {
-  /* background: #F2F2F2; */
+   background: #ffffff;
+   padding: 15px 11px;
+}
+#content img {
+  width: 100%;
 }
 #sidebar {
   float: left;
@@ -331,12 +337,11 @@ li.list-group-item.cat-blog > a.btn.btn-xs.btn-info.pull-right {
 }
 
 .widget-title {
-    border-bottom: 1px solid #49A049;
-    border-right: 10px solid #fff;
+    border-bottom: 1px solid #4AA24A;
     text-transform: uppercase;
-    position:relative;
+    position: relative;
     font-size: 16px;
-    background: #fff url(http://i.imgur.com/0bOzQ6m.png) repeat-x center;
+    background: #0E4E79 url(images/background-title.png) repeat-x center;
 }
 
  .widget-title span {
@@ -346,10 +351,10 @@ li.list-group-item.cat-blog > a.btn.btn-xs.btn-info.pull-right {
     font-weight: 700;
     padding: 0 15px;
     font-size: 14px;
-    color: #F35454;
+    color: #fff;
     text-transform: uppercase;
     margin-bottom: 10px;
-    background-color: #FFFFFF;
+    background-color: #0E4E79;
 }
 .widget-title a.readmore {
     position: absolute;
@@ -627,7 +632,7 @@ span.dl-count {
 .list-post i.fa.fa-chevron-circle-right {
     color: #8E8A8A;
 }
-#breadcrumbs,
+#breadcrumb,
 .title {
 	color: #969393;
 	background: #FFFFFF;
@@ -707,18 +712,6 @@ a.h2_caodung_box-name {
     font-weight: bold;
     font-size: 12px;
 }
-span.os {
-    color: #8D8C90;
-    margin-left: 5px;
-    font-size: 11px;
-    float: left;
-}
-span.os i.fa.fa-mobile {
-    font-size: 14px;
-	
-    color: #020202;
-}
-
 i.fa.fa-eye {
     color: #87BB22;
 }
@@ -755,7 +748,7 @@ a.dl-in-box:hover {
     float: left;
     width: 50%;
     position: relative;
-    height: 90px;
+    height: 100px;
 }
 .h2_caodung_box:last-child {
     border-bottom: 1px solid #E7E7E7!important;
