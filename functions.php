@@ -8,6 +8,7 @@ define ('THEME_NAME',   'CaoDung' );
 define('CORE' , THEME_URL . "/core");
 require_once(CORE . "/init.php");
 require_once(CORE .'/widgets.php');
+require_once(CORE .'/plugin/SlideShow/slideshow.php');
 require_once dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
 add_action( 'tgmpa_register', 'caodung_plugin_activation' );
 function caodung_plugin_activation() {
@@ -582,17 +583,9 @@ function caodung_style() {
 	// Load css bootstrap desgin
 	wp_register_style( 'style', get_template_directory_uri() . "/style.css",'all' );
 	wp_enqueue_style( 'style' );
-	wp_enqueue_style( 'core', get_template_directory_uri() . "/core.css",'core-css'  );
-	wp_enqueue_style( 'jQuery-CustomScrollbar', get_template_directory_uri() . "/core/css/jquery.mCustomScrollbar.min.css" );
-	// Load file thư viện (libraly bootstrap) css bootstrap
-	wp_enqueue_style( 'wpbootstrap-min' ,get_template_directory_uri() . "/bootstrap/css/bootstrap.min.css" );
-	wp_enqueue_style( 'wpbootstrap-theme',get_template_directory_uri() . "/bootstrap/css/bootstrap-theme.min.css"  );
-	wp_enqueue_style( 'wpfont-awesome',get_template_directory_uri() . "/bootstrap/font-awesome-4.5.0/css/font-awesome.min.css" );
 	/*Nhúng thư viện script*/
 	/*<!--[if lt IE 9]-->*/
 	wp_enqueue_script( 'html5shiv', get_template_directory_uri() ."/core/js/html5shiv.min.js" );
-	wp_enqueue_script( 'respond', get_template_directory_uri() ."/core/js/respond.min.js" );
-	wp_enqueue_script( 'jqueryapis',"https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js" );
 }
 add_action( 'wp_enqueue_scripts', 'caodung_style' );
 
