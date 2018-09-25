@@ -16,5 +16,9 @@
 			</div>	
 		</div><!--./End .main-title -->
 	</div>
-</div><!-- Start SiderBar --><?php get_sidebar(); ?><!-- End SiderBar -->
+	<div class="slidebar-ads">
+	<div class="col-md-3">
+	<?php get_sidebar('ads') ?>
+	</div></div>
+</div><?php get_sidebar('sidebar'); ?>
 <?php get_footer(); ?>

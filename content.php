@@ -1,4 +1,4 @@
-<li class="h2_caodung_box">
+<li class="<?php if ( is_single() ) { echo 'caodung_box';} else echo 'h2_caodung_box'; ?>">
 <?php
         if ( get_the_post_thumbnail() != '' ) {
                 echo '<a href="'; the_permalink(); echo '" class="img-responsive thumb">';
@@ -13,7 +13,7 @@
                }
 ?>
         <?php caodung_entry_title(); ?>  
-        <?php caodung_entry_meta() ?>
-        <?php caodung_entry_content(); ?>
+        <?php if ( !is_single() ) { caodung_entry_meta();
+        caodung_entry_content(); } ?>
         <?php ( is_single() ? caodung_entry_tag() : '' ); ?>
 </li>

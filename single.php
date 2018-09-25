@@ -14,7 +14,38 @@
 					 <?php the_content(); ?>
 				<?php endwhile; endif; ?>
 			</div>
+						<?php
+ 	global $post;
+	 	if (get_the_tags()) {
+	 		echo '<div id="content">Tag : ';
+	 	foreach(get_the_tags($post->ID) as $tag) {
+	  		echo '<a href="' . get_tag_link($tag->term_id) . '">' . $tag->name . '</a>,';
+	  	}
+	  	echo '</div>';
+ 	}
+?>
+<!--./End .main-title -->
+
+		</div><div class="slidebar-ads">
+		<div class="col-md-3">
+			<?php dynamic_sidebar('sidebar_ads') ?>
+
+<div class="main-title-single">
+	 		<div class="widget-title"><span> Bài Viết Liên Quan !</span></div>
+			<div class="list-post">
+
+<?php
+$related = get_posts( array( 'category__in' => wp_get_post_categories($post->ID), 'numberposts' => 5, 'post__not_in' => array($post->ID) ) );
+if( $related )
+	foreach( $related as $post ) {
+	setup_postdata($post); ?>
+     <?php get_template_part( 'content', get_post_format() ); ?>
+<?php }
+wp_reset_postdata(); ?>
+</div>
 		</div>
+		</div>
+	</div>
 	</div>
 <!-- Start SiderBar --><?php get_sidebar(); ?><!-- End SiderBar -->
 <?php get_footer(); ?>

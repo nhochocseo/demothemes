@@ -4,9 +4,10 @@
 		@CORE : Đường dẫn tới thư mục core trong theme
 	*/
 define('THEME_URL', get_stylesheet_directory());
+define ('THEME_NAME',   'CaoDung' );
 define('CORE' , THEME_URL . "/core");
 require_once(CORE . "/init.php");
-require_once(CORE .'/plugin/widget-post.php');
+require_once(CORE .'/widgets.php');
 require_once dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
 add_action( 'tgmpa_register', 'caodung_plugin_activation' );
 function caodung_plugin_activation() {
@@ -118,10 +119,20 @@ function caodung_demo_theme_setup()
 		'id' => 'sidebar',
 		'description' => __('Sidebar Demo'),
 		'class' => 'main-sidebar',
-		'before_title' => '<h3 class="widgettitle">',
-		'after_title' => '</h3>'
+		'before_title' => '<h3 class="widget-title"><span>',
+    'after_title' => '</span></h3>'
 	);
 	register_sidebar( $sidebar );
+
+    $sidebar_ads = array (
+    'name' => __('Main Sidebar ADS','caodung'),
+    'id' => 'sidebar_ads',
+    'description' => __('Sidebar ADS'),
+    'class' => 'main-sidebar',
+    'before_title' => '<h3 class="widget-title"><span>',
+    'after_title' => '</span></h3>'
+  );
+  register_sidebar( $sidebar_ads );
 }
 }
 add_action('init','caodung_demo_theme_setup');
@@ -136,7 +147,7 @@ if (!function_exists('caodung_header')) {
 					<div class="head-container">
 					<div class="heading">
 					<a href="%1$s">
-					<img class="logo" src="%1$s/wp-content/themes/demothemes/logo.png" alt="Kind"></a> 
+					<img class="logo" src="%1$s/wp-content/themes/demothemes/logo.png" alt="Cao Dung Blog"></a> 
 					</div>
 					<form action="%1$s" id="search" class="navbar-form navbar-right hidden-xs">
 					<div class="form-group">
@@ -249,7 +260,7 @@ if ( ! function_exists( 'get_first_image' ) ) {
   ob_end_clean();
   $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches);  
   if(empty($output)) {
-    $first_img = 'http://gioitreit.com/default.png';
+    $first_img = get_template_directory_uri() .'/avatar.png';
   }else{
   	$first_img = $matches[1][0];
   }
@@ -266,7 +277,7 @@ if ( ! function_exists( 'get_first_image' ) ) {
 if ( ! function_exists( 'caodung_entry_title' ) ) {
   function caodung_entry_title() {
     if ( is_single() ) : ?>
-    <a class="h2_caodung_box-name" href="<?php the_permalink(); ?>" data-toggle="tooltip" data-placement="bottom" rel="bookmark" title="<?php the_title_attribute(); ?>">
+    <a class="caodung_box-name" href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title_attribute(); ?>">
           <h2 class="caodung_box_title"><span> <?php the_title(); ?></span></h2>
         </a>
     <?php else : ?>
@@ -287,8 +298,8 @@ if( ! function_exists( 'caodung_entry_meta' ) ) {
   function caodung_entry_meta() {
     if ( ! is_page() ) :
  // Hiển thị tên tác giả, tên category và ngày tháng đăng bài
-        printf( __('<span class="author">Posted by %1$s</span>', 'caodung'),
-          get_the_author() );
+        printf( __('<span class="author">Người Đăng : <a href="%1$s" title="">%2$s</a> </span>', 'caodung'),
+          get_author_posts_url( get_the_author_meta( 'ID' ) ),get_the_author() );
  /*
         printf( __('<span class="date-published"> at %1$s</span>', 'caodung'),
           get_the_date() );
@@ -426,7 +437,12 @@ function dimox_breadcrumbs() {
 
 	} elseif ( !is_single() && !is_page() && get_post_type() != 'post' && !is_404() ) {
 	$post_type = get_post_type_object(get_post_type());
-	echo $before . $post_type->labels->singular_name . $after;
+    if(is_search()){
+      echo $before . get_search_query() . $after;
+    } else {
+      echo $before . $post_type->labels->singular_name . $after;
+    }
+    echo '</ol>';
 
 	} elseif ( is_attachment() ) {
 	$parent = get_post($post->post_parent);
@@ -452,15 +468,15 @@ function dimox_breadcrumbs() {
 
 	} elseif ( is_search() ) {
 	echo $before . '<a class="internal-link" href="#" rel="v:url" property="v:title">' . get_search_query() . '</a>' . $after;
-	echo '</div>';
+	echo '</ol>';
 	} elseif ( is_tag() ) {
 	echo $before . '<a class="internal-link" href="http://gioitreit.com/xem-nhieu" rel="v:url" property="v:title">Tag</a> » <a href="#" rel="v:url" property="v:title">' . single_tag_title('', false) . '</a>' . $after;
-	echo '</div>';
+	echo '</ol>';
 	} elseif ( is_author() ) {
 	global $author;
 	$userdata = get_userdata($author);
 	echo $before . 'Bài Viết Của : <b><a class="internal-link" href="#" rel="v:url" property="v:title">' . $userdata->display_name . '</a></b>' . $after;
-	echo '</div>';
+	echo '</ol>';
 	} elseif ( is_404() ) {
 	echo $before . 'Error 404' . $after;
 	}
@@ -475,6 +491,90 @@ function dimox_breadcrumbs() {
 
 	}
 } // end mod_breadcrumbs()
+
+// Custom Post Types
+
+add_action( 'init', 'create_post_types' ); // Create New Post Type
+
+function create_post_types() {
+
+	$labels = array(
+		'name' => __( 'Books' ),
+		'singular_name' => __( 'Book' ),
+		'add_new' => __( 'Add New Book' ),
+		'add_new_item' => __( 'Add New Book' ),
+		'edit' => __( 'Edit' ),
+		'edit_item' => __( 'Edit Book' ),
+		'new_item' => __( 'New Book' ),
+		'view' => __( 'View Book' ),
+		'view_item' => __( 'View Book' ),
+		'search_items' => __( 'Search Books' ),
+		'not_found' => __( 'No books found' ),
+		'not_found_in_trash' => __( 'No books found in Trash' ),
+		'parent' => __( 'Parent Book' ),
+	);
+
+	$args = array(
+		'labels' => $labels,
+		'public' => true,
+		'publicly_queryable' => true,
+		'show_ui' => true,
+		'query_var' => true,
+		'rewrite' => true,
+		'capability_type' => 'post',
+		'hierarchical' => false,
+		'menu_position' => 20,
+		'supports' => array('title','editor','thumbnail')
+	); 	
+
+	register_post_type( 'books' , $args );
+	flush_rewrite_rules( false );
+}
+// Rename Posts to News in Menu
+function wptutsplus_change_post_menu_label() {
+    global $menu;
+    global $submenu;
+    $menu[5][0] = 'News';
+    $submenu['edit.php'][5][0] = 'News Items';
+    $submenu['edit.php'][10][0] = 'Add News Item';
+}
+add_action( 'admin_menu', 'wptutsplus_change_post_menu_label' );
+// Edit submenus
+// Edit submenus
+function wptutsplus_change_post_object_label() {
+    global $wp_post_types;
+    $labels = &$wp_post_types['post']->labels;
+    $labels->name = 'News';
+    $labels->singular_name = 'News Item';
+    $labels->add_new = 'Add News Item';
+    $labels->add_new_item = 'Add News Item';
+    $labels->edit_item = 'Edit News Item';
+    $labels->new_item = 'News Item';
+    $labels->view_item = 'View News Item';
+    $labels->search_items = 'Search News Items';
+    $labels->not_found = 'No News Items found';
+    $labels->not_found_in_trash = 'No News Items found in Trash';
+}
+add_action( 'admin_menu', 'wptutsplus_change_post_object_label' );
+// Remove Comments menu item for all but Administrators
+function wptutsplus_remove_comments_menu_item() {
+    $user = wp_get_current_user();
+    if ( ! $user->has_cap( 'manage_options' ) ) {
+        remove_menu_page( 'edit-comments.php' );
+    }
+}
+add_action( 'admin_menu', 'wptutsplus_remove_comments_menu_item' );
+// Move Pages above Media
+function wptutsplus_change_menu_order( $menu_order ) {
+    return array(
+        'index.php',
+        'edit.php',
+        'edit.php?post_type=page',
+        'upload.php',
+    );
+}
+add_filter( 'custom_menu_order', '__return_true' );
+add_filter( 'menu_order', 'wptutsplus_change_menu_order' );
 	/*
 		@Nhúng tệp tin style.css vào theme
 	*/

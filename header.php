@@ -8,7 +8,8 @@
       <?php wp_head(); ?>
     </head>
     <body <?php body_class(); ?> >
- <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+       <!-- navbar-fixed-top -->
+ <nav class="navbar navbar-default" role="navigation">
    <?php caodung_header(); ?>
    <div class="container_fixed">
  <!-- Brand and toggle get grouped for better mobile display -->
